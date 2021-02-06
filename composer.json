@@ -1,0 +1,51 @@
+{
+    "name": "demowebtv/google-play-info",
+    "type": "library",
+    "description": "Scrapes app data from Google Play store.",
+    "keywords": [
+        "google play",
+        "google",
+        "scraper",
+        "android",
+        "gplay"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ne-Lexa",
+            "email": "alexey@Demowebtv.ru"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    },
+    "require": {
+        "php": ">=7.1",
+        "ext-dom": "*",
+        "ext-hash": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "nelexa/enum": "^1.0",
+        "nelexa/http-client-simple-cache": "^1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Demowebtv\\GPlay\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0 | ^8.0 | ^9.0",
+        "symfony/cache": "^4.0 | ^5.0",
+        "symfony/var-dumper": "^4.0 | ^5.0",
+        "symfony/var-exporter": "^4.0 | ^5.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Demowebtv\\GPlay\\Tests\\": "tests/"
+        }
+    },
+    "suggest": {
+        "symfony/cache": "Install the implementation of the simple cache PSR-18. Full list of packages https://packagist.org/providers/psr/simple-cache-implementation"
+    }
+}
