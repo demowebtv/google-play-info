@@ -1,7 +1,7 @@
 {
     "name": "demowebtv/google-play-info",
     "type": "library",
-    "description": "Scrapes app data from Google Play store.",
+    "description": "get app data from Google Play store.",
     "keywords": [
         "google play",
         "google",
