@@ -28,8 +28,8 @@
         "ext-hash": "*",
         "ext-json": "*",
         "ext-libxml": "*",
-        "nelexa/enum": "^1.0",
-        "nelexa/http-client-simple-cache": "^1.0.1"
+        "demowebtv/enum": "^1.0",
+        "demowebtv/http-client-simple-cache": "^1.0.1"
     },
     "autoload": {
         "psr-4": {
