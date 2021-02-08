@@ -10,8 +10,6 @@
         "gplay"
     ],
     "license": "MIT",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "authors": [
         {
             "name": "Ne-Lexa",
@@ -28,8 +26,8 @@
         "ext-hash": "*",
         "ext-json": "*",
         "ext-libxml": "*",
-        "demowebtv/enum": "^1.0",
-        "demowebtv/http-client-simple-cache": "^1.0.1"
+        "nelexa/enum": "^1.0",
+        "nelexa/http-client-simple-cache": "^1.0.1"
     },
     "autoload": {
         "psr-4": {
