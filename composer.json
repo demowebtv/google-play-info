@@ -9,9 +9,6 @@
         "android",
         "gplay"
     ],
-    "license": "MIT",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "authors": [
         {
             "name": "Ne-Lexa",
