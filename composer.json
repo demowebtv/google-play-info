@@ -27,7 +27,9 @@
         "ext-dom": "*",
         "ext-hash": "*",
         "ext-json": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "demowebtv/http-client-simple-cache": "^1.0.1",
+       "demowebtv/google-play-info": "^1.2"
     },
     "autoload": {
         "psr-4": {
