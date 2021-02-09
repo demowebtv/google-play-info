@@ -9,6 +9,7 @@
         "android",
         "gplay"
     ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Ne-Lexa",
