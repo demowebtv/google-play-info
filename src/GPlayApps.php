@@ -64,7 +64,7 @@ class GPlayApps
     /**
      * Creates an object to retrieve data about Android applications from the Google Play store.
      *
-     * @param string $locale  locale (language) for HTTP requests to Google Play
+     * @param string $locale locale (language) for HTTP requests to Google Play
      *                        or {@see GPlayApps::DEFAULT_LOCALE}
      * @param string $country country for HTTP requests to Google Play
      *                        or {@see GPlayApps::DEFAULT_COUNTRY}
@@ -75,17 +75,17 @@ class GPlayApps
     public function __construct(
         string $locale = self::DEFAULT_LOCALE,
         string $country = self::DEFAULT_COUNTRY
-    ) {
+    )
+    {
         $this
             ->setDefaultLocale($locale)
-            ->setDefaultCountry($country)
-        ;
+            ->setDefaultCountry($country);
     }
 
     /**
      * Sets caching for HTTP requests.
      *
-     * @param cacheInterface|null    $cache    PSR-16 Simple Cache instance
+     * @param cacheInterface|null $cache PSR-16 Simple Cache instance
      * @param \DateInterval|int|null $cacheTtl TTL cached data
      *
      * @return GPlayApps returns the current class instance to allow method chaining
@@ -181,9 +181,9 @@ class GPlayApps
      *
      * @param string|Model\AppId $appId google play app id (Android package name)
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\AppInfo full detail of an application or exception
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @api
      */
@@ -200,9 +200,9 @@ class GPlayApps
      *
      * @param string[]|Model\AppId[] $appIds array of application ids
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\AppInfo[] an array of detailed information for each application
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      *
@@ -252,13 +252,13 @@ class GPlayApps
      *
      * HTTP requests are executed in parallel.
      *
-     * @param string|Model\AppId $appId   google Play app ID (Android package name)
-     * @param string[]           $locales array of locales
-     *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
+     * @param string|Model\AppId $appId google Play app ID (Android package name)
+     * @param string[] $locales array of locales
      *
      * @return Model\AppInfo[] An array of detailed information for each locale.
      *                         The array key is the locale.
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      *
@@ -276,6 +276,19 @@ class GPlayApps
         return $this->getAppsInfo($requests);
     }
 
+    public function getAppInfoForCountryLocal($appId, array $locales): array
+    {
+        $appId = Util\Caster::castToAppId($appId, $this->defaultLocale, $this->defaultCountry);
+        $requests = [];
+
+        foreach ($locales as $country => $locale) {
+            if ($country == 'KR') $country = 'US';
+            $requests[$locale] = new Model\AppId($appId->getId(), $locale, $country);
+        }
+
+        return $this->getAppsInfo($requests);
+    }
+
     /**
      * Returns detailed application information for all available locales.
      *
@@ -286,10 +299,10 @@ class GPlayApps
      * @param string|Model\AppId $appId application ID (Android package name) as
      *                                  a string or {@see Model\AppId} object
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\AppInfo[] An array with detailed information about the application
      *                         on all available locales. The array key is the locale.
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      *
@@ -303,7 +316,7 @@ class GPlayApps
 
         foreach ($list as $app) {
             if ($app->isAutoTranslatedDescription()) {
-                $preferredLocale = (string) $app->getTranslatedFromLocale();
+                $preferredLocale = (string)$app->getTranslatedFromLocale();
                 break;
             }
         }
@@ -380,7 +393,7 @@ class GPlayApps
         $appId = Util\Caster::castToAppId($appId, $this->defaultLocale, $this->defaultCountry);
 
         try {
-            return (bool) $this->getHttpClient()->request(
+            return (bool)$this->getHttpClient()->request(
                 'HEAD',
                 $appId->getFullUrl(),
                 [
@@ -400,11 +413,11 @@ class GPlayApps
      * @param string[]|Model\AppId[] $appIds Array of application identifiers.
      *                                       The keys of the returned array correspond to the transferred array.
      *
-     * @throws Exception\GooglePlayException if an HTTP error other than 404 is received
-     *
      * @return bool[] An array of information about the existence of each
      *                application in the store Google Play. The keys of the returned
      *                array matches to the passed array.
+     *
+     * @throws Exception\GooglePlayException if an HTTP error other than 404 is received
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      *
@@ -439,14 +452,14 @@ class GPlayApps
      *
      * @param string|Model\AppId $appId application ID (Android package name) as
      *                                  a string or {@see Model\AppId} object
-     * @param int                $limit Maximum number of reviews. To extract all
+     * @param int $limit Maximum number of reviews. To extract all
      *                                  reviews, use {@see GPlayApps::UNLIMIT}.
-     * @param Enum\SortEnum|null $sort  Sort reviews of the application.
+     * @param Enum\SortEnum|null $sort Sort reviews of the application.
      *                                  If null, then sort by the newest reviews.
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\Review[] app reviews
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @see Enum\SortEnum Contains all valid values for the "sort" parameter.
      * @see GPlayApps::UNLIMIT Limit for all available results.
@@ -494,13 +507,13 @@ class GPlayApps
     /**
      * Returns review of the Android app in the Google Play store by review id.
      *
-     * @param string|Model\AppId $appId    application ID (Android package name) as
+     * @param string|Model\AppId $appId application ID (Android package name) as
      *                                     a string or {@see Model\AppId} object
-     * @param string             $reviewId review id
-     *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
+     * @param string $reviewId review id
      *
      * @return Model\Review app review
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
+     *
      */
     public function getReviewById($appId, string $reviewId): Model\Review
     {
@@ -534,9 +547,9 @@ class GPlayApps
      * @param string|Model\AppId $appId application ID (Android package name) as
      *                                  a string or {@see Model\AppId} object
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\Permission[] an array of permissions for the application
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @api
      */
@@ -564,9 +577,9 @@ class GPlayApps
     /**
      * Returns an array of application categories from the Google Play store.
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return Model\Category[] array of application categories
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @api
      */
@@ -600,9 +613,9 @@ class GPlayApps
      *
      * @param string[] $locales array of locales
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return Model\Category[][] array of application categories by locale
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      *
@@ -620,10 +633,10 @@ class GPlayApps
 
         foreach ($locales as $locale) {
             $urls[$locale] = $url . '?' . http_build_query(
-                [
-                    self::REQ_PARAM_LOCALE => $locale,
-                ]
-            );
+                    [
+                        self::REQ_PARAM_LOCALE => $locale,
+                    ]
+                );
         }
 
         try {
@@ -643,9 +656,9 @@ class GPlayApps
     /**
      * Returns an array of categories from the Google Play store for all available locales.
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return Model\Category[][] array of application categories by locale
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      *
@@ -663,9 +676,9 @@ class GPlayApps
      *                                                      string, {@see Model\Developer}
      *                                                      or {@see Model\App} object
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return Model\Developer information about the application developer
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @see GPlayApps::getDeveloperInfoForLocales() Returns information about the developer for the locale array.
      *
@@ -712,12 +725,12 @@ class GPlayApps
      * @param string|Model\Developer|Model\App $developerId developer id as
      *                                                      string, {@see Model\Developer}
      *                                                      or {@see Model\App} object
-     * @param string[]                         $locales     array of locales
-     *
-     * @throws Exception\GooglePlayException if HTTP error is received
+     * @param string[] $locales array of locales
      *
      * @return Model\Developer[] an array with information about the application developer
      *                           for each requested locale
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @see GPlayApps::setConcurrency() Sets the limit of concurrent HTTP requests.
      * @see GPlayApps::getDeveloperInfo() Returns information about the developer: name,
@@ -748,11 +761,11 @@ class GPlayApps
 
         foreach ($locales as $locale) {
             $urls[$locale] = $url . '?' . http_build_query(
-                [
-                    self::REQ_PARAM_ID => $id,
-                    self::REQ_PARAM_LOCALE => $locale,
-                ]
-            );
+                    [
+                        self::REQ_PARAM_ID => $id,
+                        self::REQ_PARAM_LOCALE => $locale,
+                    ]
+                );
         }
 
         try {
@@ -776,9 +789,9 @@ class GPlayApps
      *                                                      string, {@see Model\Developer}
      *                                                      or {@see Model\App} object
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return Model\App[] an array of applications with basic information
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @api
      */
@@ -831,14 +844,14 @@ class GPlayApps
      * Returns a list of applications with basic information.
      *
      * @param string $clusterPageUrl cluster page URL
-     * @param string $locale         locale
-     * @param string $country        country
-     * @param int    $limit          Maximum number of applications. To extract all
+     * @param string $locale locale
+     * @param string $country country
+     * @param int $limit Maximum number of applications. To extract all
      *                               applications, use {@see GPlayApps::UNLIMIT}.
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\App[] array of applications with basic information about them
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @see GPlayApps::UNLIMIT Limit for all available results.
      */
@@ -847,7 +860,8 @@ class GPlayApps
         string $locale,
         string $country,
         int $limit
-    ): array {
+    ): array
+    {
         if ($limit < self::UNLIMIT || $limit === 0) {
             throw new \InvalidArgumentException(sprintf('Invalid limit: %d', $limit));
         }
@@ -912,13 +926,13 @@ class GPlayApps
      *
      * @param string|Model\AppId $appId application ID (Android package name)
      *                                  as a string or {@see Model\AppId} object
-     * @param int                $limit The maximum number of similar applications.
+     * @param int $limit The maximum number of similar applications.
      *                                  To extract all similar applications,
      *                                  use {@see GPlayApps::UNLIMIT}.
      *
-     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
-     *
      * @return Model\App[] an array of applications with basic information about them
+     *
+     * @throws Exception\GooglePlayException if the application is not exists or other HTTP error
      *
      * @see GPlayApps::UNLIMIT Limit for all available results.
      *
@@ -960,9 +974,9 @@ class GPlayApps
      *
      * @param string $query search query
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return string[] array containing search suggestions
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @api
      */
@@ -1002,13 +1016,13 @@ class GPlayApps
     /**
      * Returns a list of applications from the Google Play store for a search query.
      *
-     * @param string              $query search query
-     * @param int                 $limit the limit on the number of search results
+     * @param string $query search query
+     * @param int $limit the limit on the number of search results
      * @param Enum\PriceEnum|null $price price category or `null`
      *
-     * @throws Exception\GooglePlayException if HTTP error is received
-     *
      * @return Model\App[] an array of applications with basic information
+     *
+     * @throws Exception\GooglePlayException if HTTP error is received
      *
      * @see Enum\PriceEnum Contains all valid values for the "price" parameter.
      * @see GPlayApps::UNLIMIT Limit for all available results.
@@ -1048,8 +1062,8 @@ class GPlayApps
      *                                                               string, {@see Model\Category},
      *                                                               {@see Enum\CategoryEnum} or
      *                                                               `null` for all categories
-     * @param Enum\AgeEnum|null                            $age      age limit or null for no limit
-     * @param int                                          $limit    limit on the number of results
+     * @param Enum\AgeEnum|null $age age limit or null for no limit
+     * @param int $limit limit on the number of results
      *                                                               or {@see GPlayApps::UNLIMIT}
      *                                                               for no limit
      *
@@ -1071,8 +1085,8 @@ class GPlayApps
      *                                                               string, {@see Model\Category},
      *                                                               {@see Enum\CategoryEnum} or
      *                                                               `null` for all categories
-     * @param Enum\AgeEnum|null                            $age      age limit or null for no limit
-     * @param int                                          $limit    limit on the number of results
+     * @param Enum\AgeEnum|null $age age limit or null for no limit
+     * @param int $limit limit on the number of results
      *                                                               or {@see GPlayApps::UNLIMIT}
      *                                                               for no limit
      *
@@ -1094,8 +1108,8 @@ class GPlayApps
      *                                                               string, {@see Model\Category},
      *                                                               {@see Enum\CategoryEnum} or
      *                                                               `null` for all categories
-     * @param Enum\AgeEnum|null                            $age      age limit or null for no limit
-     * @param int                                          $limit    limit on the number of results
+     * @param Enum\AgeEnum|null $age age limit or null for no limit
+     * @param int $limit limit on the number of results
      *                                                               or {@see GPlayApps::UNLIMIT}
      *                                                               for no limit
      *
@@ -1112,9 +1126,9 @@ class GPlayApps
 
     /**
      * @param string|Model\Category|Enum\CategoryEnum|null $category
-     * @param Enum\AgeEnum|null                            $age
-     * @param string|null                                  $path
-     * @param int                                          $limit
+     * @param Enum\AgeEnum|null $age
+     * @param string|null $path
+     * @param int $limit
      *
      * @return Model\App[]
      */
@@ -1209,12 +1223,12 @@ class GPlayApps
      * );
      * ```
      *
-     * @param Model\GoogleImage[] $images           array of {@see Model\GoogleImage} objects
-     * @param callable            $destPathCallback The function to which the
+     * @param Model\GoogleImage[] $images array of {@see Model\GoogleImage} objects
+     * @param callable $destPathCallback The function to which the
      *                                              {@see Model\GoogleImage} object is
      *                                              passed and you must return the full
      *                                              output. path to save this file.
-     * @param bool                $overwrite        overwrite files if exists
+     * @param bool $overwrite overwrite files if exists
      *
      * @return Model\ImageInfo[] returns an array with information about saved images
      *
@@ -1227,7 +1241,8 @@ class GPlayApps
         array $images,
         callable $destPathCallback,
         bool $overwrite = false
-    ): array {
+    ): array
+    {
         /** @var array<string, StreamInterface> $mapping */
         $mapping = [];
 
@@ -1274,8 +1289,7 @@ class GPlayApps
                             ) use ($url) {
                                 return $url;
                             }
-                        )
-                    ;
+                        );
                 }
             }
         })();
@@ -1355,10 +1369,10 @@ class GPlayApps
      */
     public function setDefaultCountry(string $defaultCountry): self
     {
+        if ($defaultCountry == 'kr' || $defaultCountry == 'KR') $defaultCountry = self::DEFAULT_COUNTRY;
         $this->defaultCountry = !empty($defaultCountry) ?
             $defaultCountry :
             self::DEFAULT_COUNTRY;
-
         return $this;
     }
 
