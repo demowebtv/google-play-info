@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Util;
@@ -25,13 +27,14 @@ class ScraperUtil
     {
         $scripts = [];
 
-        if (preg_match_all('/>AF_initDataCallback\((.*?)\);<\/script/s', $html, $matches)) {
+        preg_match_all('/>AF_initDataCallback\((.*?)\);<\/script/s', $html, $matches);
+        if ($matches) {
             $scripts = array_reduce(
                 $matches[0],
                 static function ($carry, $item) {
                     if (
-                        preg_match("/(ds:.*?)'/", $item, $keyMatch) &&
-                        preg_match('/data:([\s\S]*?)(, }\);<\/|, sideChannel:)/', $item, $valueMatch)
+                        preg_match("/(ds:.*?)'/", $item, $keyMatch)
+                        && preg_match('/data:([\s\S]*?)(, }\);<\/|, sideChannel:)/', $item, $valueMatch)
                     ) {
                         $carry[$keyMatch[1]] = \GuzzleHttp\json_decode($valueMatch[1], true);
                     }
@@ -56,8 +59,7 @@ class ScraperUtil
         $internalErrors = libxml_use_internal_errors(true);
 
         if (!$doc->loadHTML('<?xml encoding="utf-8"?>' . $html)) {
-            throw new
-            \RuntimeException(
+            throw new \RuntimeException(
                 'error load html: ' . $html
             );
         }
@@ -122,5 +124,31 @@ class ScraperUtil
         }
 
         return $text;
+    }
+
+    /**
+     * @param array        $array
+     * @param array|string $path
+     * @param string       $glue
+     *
+     * @return mixed
+     */
+    public static function getValue(array &$array, $path, string $glue = '.')
+    {
+        if (!\is_array($path)) {
+            $path = explode($glue, (string) $path);
+        }
+
+        $ref = &$array;
+
+        foreach ((array) $path as $parent) {
+            if (\is_array($ref) && \array_key_exists($parent, $ref)) {
+                $ref = &$ref[$parent];
+            } else {
+                return null;
+            }
+        }
+
+        return $ref;
     }
 }

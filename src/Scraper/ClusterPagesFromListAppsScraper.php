@@ -2,53 +2,73 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Scraper;
 
 use Demowebtv\GPlay\GPlayApps;
-use Demowebtv\GPlay\Model\App;
+use Demowebtv\GPlay\HttpClient\ParseHandlerInterface;
+use Demowebtv\GPlay\Model\ClusterPage;
 use Demowebtv\GPlay\Util\ScraperUtil;
-use Demowebtv\HttpClient\ResponseHandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @internal
  */
-class ClusterPagesFromListAppsScraper implements ResponseHandlerInterface
+class ClusterPagesFromListAppsScraper implements ParseHandlerInterface
 {
     /**
      * @param RequestInterface  $request
      * @param ResponseInterface $response
+     * @param array             $options
      *
-     * @return App[]
+     * @return array
      */
-    public function __invoke(RequestInterface $request, ResponseInterface $response)
+    public function __invoke(RequestInterface $request, ResponseInterface $response, array &$options = []): array
     {
-        $scriptData = ScraperUtil::extractScriptData($response->getBody()->getContents());
+        $contents = $response->getBody()->getContents();
+        $scriptData = ScraperUtil::extractScriptData($contents);
+
+        if (isset($scriptData['ds:4'][0][1])) {
+            $scriptDataInfo = $scriptData['ds:4'][0][1];
+            $token = $scriptData['ds:4'][0][3][1] ?? null;
+        } elseif (isset($scriptData['ds:3'][0][1])) {
+            $scriptDataInfo = $scriptData['ds:3'][0][1];
+            $token = $scriptData['ds:3'][0][3][1] ?? null;
+        } else {
+            return [
+                'results' => [],
+                'token' => null,
+            ];
+        }
 
         $results = [];
 
-        foreach ($scriptData as $k => $v) {
-            if (isset($v[0][1][0][0][1], $v[0][1][0][0][3][4][2])) {
-                foreach ($v[0][1] as $a) {
-                    if (isset($a[0][1], $a[0][3][4][2])) {
-                        $results[] = [
-                            'name' => trim($a[0][1]),
-                            'url' => GPlayApps::GOOGLE_PLAY_URL . $a[0][3][4][2],
-                        ];
-                    }
-                }
-                break;
+        foreach ($scriptDataInfo as $item) {
+            if (isset($item[21][1][0], $item[21][1][2][4][2])) {
+                $results[] = new ClusterPage(
+                    trim($item[21][1][0]),
+                    GPlayApps::GOOGLE_PLAY_URL . $item[21][1][2][4][2]
+                );
+            } elseif (isset($item[22][1][0], $item[22][1][2][4][2])) {
+                $results[] = new ClusterPage(
+                    trim($item[22][1][0]),
+                    GPlayApps::GOOGLE_PLAY_URL . $item[22][1][2][4][2]
+                );
             }
         }
 
-        return $results;
+        return [
+            'results' => $results,
+            'token' => $token,
+        ];
     }
 }

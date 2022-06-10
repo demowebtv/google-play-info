@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Model;
@@ -38,20 +40,26 @@ class App extends AppId implements \JsonSerializable
     /** @var string Application name. */
     private $name;
 
-    /** @var string|null Application summary. */
-    private $summary;
+    /** @var string Application description. */
+    private $description;
 
-    /** @var Developer Application developer. */
-    private $developer;
+    /** @var string|null Application developer name. */
+    private $developerName;
 
     /** @var GoogleImage Application icon. */
     private $icon;
+
+    /** @var GoogleImage[] Screenshots of the application. */
+    private $screenshots;
 
     /** @var float Application rating on a five-point scale. */
     private $score;
 
     /** @var string|null Price of the application or null if it is free. */
     private $priceText;
+
+    /** @var string Formatted number of installations of the application. */
+    private $installsText;
 
     /**
      * Creates an object containing basic information about the Android application.
@@ -86,15 +94,15 @@ class App extends AppId implements \JsonSerializable
             );
         }
 
-        if ($builder->getDeveloper() === null) {
-            throw new \InvalidArgumentException(
-                'Application developer cannot be null. Solution: $appBuilder->setDeveloper(...);'
-            );
-        }
-
         if ($builder->getIcon() === null) {
             throw new \InvalidArgumentException(
                 'Application icon cannot be null. Solution: $appBuilder->setIcon(...);'
+            );
+        }
+
+        if (empty($builder->getScreenshots())) {
+            throw new \InvalidArgumentException(
+                'Screenshots of the application must contain at least one screenshot. Solution: $appBuilder->setScreenshots(...); or $appBuilder->addScreenshot(...);'
             );
         }
 
@@ -105,9 +113,11 @@ class App extends AppId implements \JsonSerializable
         );
 
         $this->name = $builder->getName();
-        $this->summary = $builder->getSummary();
-        $this->developer = $builder->getDeveloper();
+        $this->description = $builder->getDescription();
+        $this->developerName = $builder->getDeveloperName();
+        $this->installsText = $builder->getInstallsText();
         $this->icon = $builder->getIcon();
+        $this->screenshots = $builder->getScreenshots();
         $this->score = $builder->getScore();
         $this->priceText = $builder->getPriceText();
     }
@@ -123,23 +133,47 @@ class App extends AppId implements \JsonSerializable
     }
 
     /**
+     * Returns a description of the application.
+     *
+     * @return string description of the application
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
      * Returns application summary.
      *
      * @return string|null application summary
+     *
+     * @deprecated It is no longer possible to get a summary
      */
     public function getSummary(): ?string
     {
-        return $this->summary;
+        return null;
     }
 
     /**
      * Returns application developer.
      *
-     * @return Developer application developer
+     * @return Developer|null application developer
+     *
+     * @deprecated Use {@see \Demowebtv\GPlay\Model\App::getDeveloperName()}
      */
-    public function getDeveloper(): Developer
+    public function getDeveloper(): ?Developer
     {
-        return $this->developer;
+        return null;
+    }
+
+    /**
+     * Returns application developer name.
+     *
+     * @return string|null application developer name
+     */
+    public function getDeveloperName(): ?string
+    {
+        return $this->developerName;
     }
 
     /**
@@ -150,6 +184,24 @@ class App extends AppId implements \JsonSerializable
     public function getIcon(): GoogleImage
     {
         return $this->icon;
+    }
+
+    /**
+     * Returns screenshots of the application.
+     *
+     * The array must contain at least 2 screenshots.
+     *
+     * Google Play screenshots requirements:
+     * * JPEG or 24-bit PNG (no alpha)
+     * * Minimum dimension: 320px
+     * * Maximum dimension: 3840px
+     * * The maximum dimension of the screenshot can't be more than twice as long as the minimum dimension.
+     *
+     * @return GoogleImage[] array of screenshots
+     */
+    public function getScreenshots(): array
+    {
+        return $this->screenshots;
     }
 
     /**
@@ -183,6 +235,14 @@ class App extends AppId implements \JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getInstallsText(): ?string
+    {
+        return $this->installsText;
+    }
+
+    /**
      * Creates a new application builder.
      *
      * @return AppBuilder application builder
@@ -206,11 +266,18 @@ class App extends AppId implements \JsonSerializable
             'locale' => $this->getLocale(),
             'country' => $this->getCountry(),
             'name' => $this->name,
-            'summary' => $this->summary,
-            'developer' => $this->developer->asArray(),
+            'description' => $this->description,
+            'developerName' => $this->getDeveloperName(),
             'icon' => $this->icon->getUrl(),
+            'screenshots' => array_map(
+                static function (GoogleImage $googleImage) {
+                    return $googleImage->getUrl();
+                },
+                $this->screenshots
+            ),
             'score' => $this->score,
             'priceText' => $this->priceText,
+            'installsText' => $this->installsText,
         ];
     }
 }

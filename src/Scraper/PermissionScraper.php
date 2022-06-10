@@ -2,33 +2,36 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Scraper;
 
+use Demowebtv\GPlay\HttpClient\ParseHandlerInterface;
 use Demowebtv\GPlay\Model\GoogleImage;
 use Demowebtv\GPlay\Model\Permission;
-use Demowebtv\HttpClient\ResponseHandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @internal
  */
-class PermissionScraper implements ResponseHandlerInterface
+class PermissionScraper implements ParseHandlerInterface
 {
     /**
      * @param RequestInterface  $request
      * @param ResponseInterface $response
+     * @param array             $options
      *
      * @return Permission[]
      */
-    public function __invoke(RequestInterface $request, ResponseInterface $response)
+    public function __invoke(RequestInterface $request, ResponseInterface $response, array &$options = []): array
     {
         $contents = substr($response->getBody()->getContents(), 5);
         $json = \GuzzleHttp\json_decode($contents, true);
@@ -46,6 +49,9 @@ class PermissionScraper implements ResponseHandlerInterface
             }
 
             foreach ($items as $values) {
+                if (empty($values)) {
+                    continue;
+                }
                 $permissionName = $values[0];
                 $permissions[$permissionName] = [
                     'name' => $permissionName,

@@ -2,25 +2,27 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Scraper;
 
+use Demowebtv\GPlay\HttpClient\ParseHandlerInterface;
 use Demowebtv\GPlay\Model\AppId;
 use Demowebtv\GPlay\Scraper\Extractor\ReviewsExtractor;
-use Demowebtv\HttpClient\ResponseHandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @internal
  */
-class ReviewsScraper implements ResponseHandlerInterface
+class ReviewsScraper implements ParseHandlerInterface
 {
     /** @var AppId */
     private $requestApp;
@@ -38,10 +40,11 @@ class ReviewsScraper implements ResponseHandlerInterface
     /**
      * @param RequestInterface  $request
      * @param ResponseInterface $response
+     * @param array             $options
      *
      * @return array
      */
-    public function __invoke(RequestInterface $request, ResponseInterface $response)
+    public function __invoke(RequestInterface $request, ResponseInterface $response, array &$options = []): array
     {
         $contents = substr($response->getBody()->getContents(), 5);
         $json = \GuzzleHttp\json_decode($contents, true);

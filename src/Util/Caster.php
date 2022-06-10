@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Util;
@@ -30,7 +32,7 @@ final class Caster
      */
     public static function castToDeveloperId($developerId): string
     {
-        if ($developerId instanceof App) {
+        if ($developerId instanceof AppInfo) {
             return $developerId->getDeveloper()->getId();
         }
 
@@ -80,10 +82,6 @@ final class Caster
 
         if (\is_string($appId)) {
             return new AppId($appId, $locale, $country);
-        }
-
-        if ($appId instanceof AppId) {
-            return $appId;
         }
 
         return $appId;

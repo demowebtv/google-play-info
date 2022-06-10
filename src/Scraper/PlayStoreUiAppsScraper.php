@@ -2,34 +2,37 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Scraper;
 
+use GuzzleHttp\Psr7\Query;
 use Demowebtv\GPlay\GPlayApps;
+use Demowebtv\GPlay\HttpClient\ParseHandlerInterface;
 use Demowebtv\GPlay\Scraper\Extractor\AppsExtractor;
-use Demowebtv\HttpClient\ResponseHandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use function GuzzleHttp\Psr7\parse_query;
 
 /**
  * @internal
  */
-class PlayStoreUiAppsScraper implements ResponseHandlerInterface
+class PlayStoreUiAppsScraper implements ParseHandlerInterface
 {
     /**
      * @param RequestInterface  $request
      * @param ResponseInterface $response
+     * @param array             $options
      *
      * @return array
      */
-    public function __invoke(RequestInterface $request, ResponseInterface $response): array
+    public function __invoke(RequestInterface $request, ResponseInterface $response, array &$options = []): array
     {
         $contents = substr($response->getBody()->getContents(), 5);
         $json = \GuzzleHttp\json_decode($contents, true);
@@ -39,21 +42,22 @@ class PlayStoreUiAppsScraper implements ResponseHandlerInterface
         }
         $json = \GuzzleHttp\json_decode($json[0][2], true);
 
-        if (empty($json[0][0][0])) {
+        $json = $json[0][22] ?? $json[0][21];
+        if (empty($json)) {
             return [[], null];
         }
 
-        $query = parse_query($request->getUri()->getQuery());
+        $query = Query::parse($request->getUri()->getQuery());
         $locale = $query[GPlayApps::REQ_PARAM_LOCALE] ?? GPlayApps::DEFAULT_LOCALE;
         $country = $query[GPlayApps::REQ_PARAM_COUNTRY] ?? GPlayApps::DEFAULT_COUNTRY;
 
         $apps = [];
 
-        foreach ($json[0][0][0] as $data) {
-            $apps[] = AppsExtractor::extractApp($data, $locale, $country);
+        foreach ($json[0] as $data) {
+            $apps[] = AppsExtractor::extractApp(isset($data[1]) ? $data : $data[0], $locale, $country);
         }
 
-        $nextToken = $json[0][0][7][1] ?? null;
+        $nextToken = $json[1][3][1] ?? null;
 
         return [$apps, $nextToken];
     }

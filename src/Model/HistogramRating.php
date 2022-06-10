@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Model;
@@ -120,7 +122,7 @@ class HistogramRating implements \JsonSerializable
     {
         return [
             'five' => $this->fiveStars,
-            'four' => $this->fourStars,
+            'four' => $this->fiveStars,
             'three' => $this->threeStars,
             'two' => $this->twoStars,
             'one' => $this->oneStar,

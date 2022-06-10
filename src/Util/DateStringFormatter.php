@@ -3,11 +3,13 @@
 /** @noinspection PhpUnusedPrivateMethodInspection */
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Util;
@@ -77,7 +79,21 @@ class DateStringFormatter
             ],
         ],
         'be' => [
-            'pattern' => '~^(?P<day>\d{1,2})\.(?P<month>\d{2})\.(?P<year>\d{4})$~',
+            'pattern' => '~^(?P<day>\d{1,2}) (?P<month>.*?) (?P<year>\d{4}) г.$~',
+            'months' => [
+                'сту' => 1,
+                'лют' => 2,
+                'сак' => 3,
+                'кра' => 4,
+                'мая' => 5,
+                'чэр' => 6,
+                'ліп' => 7,
+                'жні' => 8,
+                'вер' => 9,
+                'кас' => 10,
+                'ліс' => 11,
+                'сне' => 12,
+            ],
         ],
         'bg' => [
             'pattern' => '~^(?P<day>\d{1,2})\.(?P<month>\d{2})\.(?P<year>\d{4}) г.$~',
@@ -166,29 +182,33 @@ class DateStringFormatter
                 'Apr' => 4,
                 'May' => 5,
                 'Jun' => 6,
+                'June' => 6,
                 'Jul' => 7,
+                'July' => 7,
                 'Aug' => 8,
                 'Sep' => 9,
+                'Sept' => 9,
                 'Oct' => 10,
                 'Nov' => 11,
                 'Dec' => 12,
             ],
         ],
         'en_CA' => [
-            'pattern' => '~^(?P<month>.*?)\s(?P<day>\d{1,2}),\s(?P<year>\d{4})$~',
+            'pattern' => '~^(?P<month>.*?)\.?\s(?P<day>\d{1,2}),\s(?P<year>\d{4})$~',
             'months' => [
-                'Jan.' => 1,
-                'Feb.' => 2,
-                'Mar.' => 3,
-                'Apr.' => 4,
+                'Jan' => 1,
+                'Feb' => 2,
+                'Mar' => 3,
+                'Apr' => 4,
                 'May' => 5,
-                'Jun.' => 6,
-                'Jul.' => 7,
-                'Aug.' => 8,
-                'Sep.' => 9,
-                'Oct.' => 10,
-                'Nov.' => 11,
-                'Dec.' => 12,
+                'Jun' => 6,
+                'Jul' => 7,
+                'Aug' => 8,
+                'Sep' => 9,
+                'Sept' => 9,
+                'Oct' => 10,
+                'Nov' => 11,
+                'Dec' => 12,
             ],
         ],
         'en_GB' => [
@@ -200,9 +220,12 @@ class DateStringFormatter
                 'Apr' => 4,
                 'May' => 5,
                 'Jun' => 6,
+                'June' => 6,
                 'Jul' => 7,
+                'July' => 7,
                 'Aug' => 8,
                 'Sep' => 9,
+                'Sept' => 9,
                 'Oct' => 10,
                 'Nov' => 11,
                 'Dec' => 12,
@@ -220,6 +243,7 @@ class DateStringFormatter
                 'Jul' => 7,
                 'Aug' => 8,
                 'Sep' => 9,
+                'Sept' => 9,
                 'Oct' => 10,
                 'Nov' => 11,
                 'Dec' => 12,
@@ -237,6 +261,7 @@ class DateStringFormatter
                 'Jul' => 7,
                 'Aug' => 8,
                 'Sep' => 9,
+                'Sept' => 9,
                 'Oct' => 10,
                 'Nov' => 11,
                 'Dec' => 12,
@@ -271,13 +296,14 @@ class DateStringFormatter
                 'Jul' => 7,
                 'Aug' => 8,
                 'Sep' => 9,
+                'Sept' => 9,
                 'Oct' => 10,
                 'Nov' => 11,
                 'Dec' => 12,
             ],
         ],
         'es_419' => [
-            'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\.\s(?P<year>\d{4})$~',
+            'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\.?\s(?P<year>\d{4})$~',
             'months' => [
                 'ene' => 1,
                 'feb' => 2,
@@ -288,13 +314,14 @@ class DateStringFormatter
                 'jul' => 7,
                 'ago' => 8,
                 'sep' => 9,
+                'sept' => 9,
                 'oct' => 10,
                 'nov' => 11,
                 'dic' => 12,
             ],
         ],
         'es_ES' => [
-            'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\.\s(?P<year>\d{4})$~',
+            'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\.?\s(?P<year>\d{4})$~',
             'months' => [
                 'ene' => 1,
                 'feb' => 2,
@@ -311,7 +338,7 @@ class DateStringFormatter
             ],
         ],
         'es_US' => [
-            'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\.\s(?P<year>\d{4})$~',
+            'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\.?\s(?P<year>\d{4})$~',
             'months' => [
                 'ene' => 1,
                 'feb' => 2,
@@ -322,6 +349,7 @@ class DateStringFormatter
                 'jul' => 7,
                 'ago' => 8,
                 'sep' => 9,
+                'sept' => 9,
                 'oct' => 10,
                 'nov' => 11,
                 'dic' => 12,
@@ -716,7 +744,7 @@ class DateStringFormatter
             ],
         ],
         'mk_MK' => [
-            'pattern' => '~^(?P<day>\d{2})\.(?P<month>\d{1,2})\.(?P<year>\d{4})$~',
+            'pattern' => '~^(?P<day>\d{1,2})\.(?P<month>\d{1,2})\.(?P<year>\d{4})$~',
         ],
         'ml_IN' => [
             'pattern' => '~^(?P<year>\d{4}),\s(?P<month>.*?)\s(?P<day>\d{1,2})$~',
@@ -774,7 +802,7 @@ class DateStringFormatter
             ],
         ],
         'my_MM' => [
-            'pattern' => '~^(?P<year>\d{4})၊\s(?P<month>.*?)\s(?P<day>\d{1,2})$~',
+            'pattern' => '~^(?P<year>\d{4})-\s(?P<month>.*?)\s(?P<day>\d{1,2})$~',
             'convert' => [__CLASS__, 'convertBurmeseNumbers'],
             'months' => [
                 'ဇန်' => 1,
@@ -952,7 +980,7 @@ class DateStringFormatter
             ],
         ],
         'sr' => [
-            'pattern' => '~^(?P<day>\d{2})\.(?P<month>\d{2})\.(?P<year>\d{4})\.$~',
+            'pattern' => '~^(?P<day>\d{1,2})\.\s(?P<month>\d{1,2})\.\s(?P<year>\d{4})\.$~',
         ],
         'sv_SE' => [
             'pattern' => '~^(?P<day>\d{1,2})\s(?P<month>.*?)\s(?P<year>\d{4})$~',
@@ -1179,7 +1207,10 @@ class DateStringFormatter
         $datePatternObj = self::MEDIUM_DATE_PATTERNS[$locale];
 
         if (isset($datePatternObj['convert'])) {
-            $dateText = forward_static_call($datePatternObj['convert'], $dateText);
+            $convertedText = forward_static_call($datePatternObj['convert'], $dateText);
+            if ($convertedText !== false) {
+                $dateText = (string) $convertedText;
+            }
         }
 
         if (preg_match($datePatternObj['pattern'], $dateText, $match)) {
@@ -1190,8 +1221,8 @@ class DateStringFormatter
             if (isset($datePatternObj['months'])) {
                 if (!isset($datePatternObj['months'][$month])) {
                     throw new \RuntimeException(
-                        'Error convert date. Locale ' . $locale . '. Date: ' . $dateText .
-                        '. Matches: ' . var_export($match, true)
+                        'Error convert date. Locale ' . $locale . '. Date: ' . $dateText
+                        . '. Matches: ' . var_export($match, true)
                     );
                 }
                 $month = $datePatternObj['months'][$month];
@@ -1287,12 +1318,12 @@ class DateStringFormatter
         $leap = true;
 
         if ($gregorianDayNo >= 36525) {
-            $gregorianDayNo--;
+            --$gregorianDayNo;
             $gregorianYear += 100 * floor($gregorianDayNo / 36524);
             $gregorianDayNo %= 36524;
 
             if ($gregorianDayNo >= 365) {
-                $gregorianDayNo++;
+                ++$gregorianDayNo;
             } else {
                 $leap = false;
             }
@@ -1302,11 +1333,11 @@ class DateStringFormatter
 
         if ($gregorianDayNo >= 366) {
             $leap = false;
-            $gregorianDayNo--;
+            --$gregorianDayNo;
             $gregorianYear += floor($gregorianDayNo / 365);
             $gregorianDayNo %= 365;
         }
-        for ($i = 0; $gregorianDayNo >= $gregorianDaysInMonth[$i] + ($i === 1 && $leap); $i++) {
+        for ($i = 0; $gregorianDayNo >= $gregorianDaysInMonth[$i] + ($i === 1 && $leap); ++$i) {
             $gregorianDayNo -= $gregorianDaysInMonth[$i] + ($i === 1 && $leap);
         }
         $gregorianMonth = $i + 1;

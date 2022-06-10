@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-/**
- * @author   Ne-Lexa
- * @license  MIT
+/*
+ * Copyright (c) Ne-Lexa
  *
- * @see      https://github.com/Ne-Lexa/google-play-info
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * @see https://github.com/Ne-Lexa/google-play-scraper
  */
 
 namespace Demowebtv\GPlay\Model;
@@ -71,7 +73,7 @@ class ReplyReview implements \JsonSerializable
     public function asArray(): array
     {
         return [
-            'date' => $this->date->format(\DateTimeInterface::RFC3339),
+            'date' => $this->date->format(\DateTime::RFC3339),
             'timestamp' => $this->date->getTimestamp(),
             'text' => $this->text,
         ];
